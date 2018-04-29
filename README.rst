@@ -169,6 +169,8 @@ class definition::
 Release Notes
 -------------
 
+:0.2.3:
+    Removed unnecessary dependency
 :0.2.2:
     Released alpha with python 2.7 and 3.x compatibility
 :0.2.1:
