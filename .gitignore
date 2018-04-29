@@ -8,3 +8,4 @@ dongo.egg*
 .tox/*
 .cache/*
 .ropeproject/*
+venv/
