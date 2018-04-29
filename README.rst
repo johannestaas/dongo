@@ -74,14 +74,14 @@ Next you will need to declare some sort of collection classes::
     # insert must be called manually
     queen.insert()
 
-    # you can use keywords and auto-insert with the "new" classmethod:
+    # you can use keywords and auto-insert with the "new" classmethod.
     queen_stoneage = MusicArtist.new(
         name='queens of the stone age',
         lead='josh',
         songs=['go with the flow', 'little sister'],
         start=datetime(year=1996, month=1, day=1),
         fans=['jack'],
-        'nested': {
+        nested={
             'field1': 1,
             'field2': 222,
         },
