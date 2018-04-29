@@ -37,7 +37,7 @@ setup(
         'Operating System :: Microsoft :: Windows',
         'Programming Language :: Python',
     ],
-    install_requires=['pymongo', 'confutil', 'six'],
+    install_requires=['pymongo', 'six'],
     entry_points={
         'console_scripts': [
             'dongo=dongo:main',
