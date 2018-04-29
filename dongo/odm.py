@@ -913,7 +913,7 @@ class DongoCollection(object):
         return QuerySet._filter_and(cls)
 
     @classmethod
-    def create_index(cls, *args, background=True, **kwargs):
+    def create_index(cls, *args, **kwargs):
         '''
         Create an index on the collection, default in the background::
 
@@ -923,8 +923,13 @@ class DongoCollection(object):
 
         :param *args: the string term to index on, or a list of
                       (term, direction) tuples
+        :param background: whether to create the index in the background
+            (default: True)
         :return: the pymongo ``create_index`` result
         '''
+        # Python 2 doesn't like keyword arguments after *args and before
+        # **kwargs.
+        background = kwargs.get('background', True)
         return cls.db.create_index(*args, background=background, **kwargs)
 
 
