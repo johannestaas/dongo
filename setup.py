@@ -17,7 +17,7 @@ setup(
     author_email="johannestaas@gmail.com",
     license="LGPLv3+",
     keywords="",
-    url="https://www.bitbucket.org/johannestaas/dongo",
+    url="https://github.com/johannestaas/dongo",
     packages=['dongo'],
     package_dir={'dongo': 'dongo'},
     long_description=read('README.rst'),
