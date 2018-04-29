@@ -10,7 +10,7 @@ from .exceptions import (
 
 
 __title__ = 'dongo'
-__version__ = '0.0.1'
+__version__ = '0.1.0'
 __all__ = ('connect', 'QuerySet', 'DongoCollection', 'DongoError',
            'DongoConnectError', 'DongoResultError', 'DongoCollectionError',
            'DongoClient', 'to_uuid')
