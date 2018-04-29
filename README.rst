@@ -3,7 +3,7 @@ dongo
 
 A Django-ORM inspired Mongo ODM.
 
-(Requires at least MongoDB 2.6, as PyMongo does)
+Python 2.7 and 3.x compatible, and requires the database server running at least MongoDB 2.6, as PyMongo does.
 
 Installation
 ------------
