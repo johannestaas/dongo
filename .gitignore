@@ -9,3 +9,4 @@ dongo.egg*
 .cache/*
 .ropeproject/*
 venv/
+venv2/

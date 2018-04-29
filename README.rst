@@ -169,5 +169,7 @@ class definition::
 Release Notes
 -------------
 
-:0.0.1:
-    Project created
+:0.2.2:
+    Released alpha with python 2.7 and 3.x compatibility
+:0.2.1:
+    Released alpha with python 3.x compatibility
