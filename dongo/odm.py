@@ -674,10 +674,10 @@ class DongoCollection(object):
             ])
 
         :param uuids: the uuids to check
-        :return: the class instances
+        :return: a QuerySet of the records matching those UUIDs
         '''
         uuid_list = [to_uuid(g) for g in uuids]
-        return cls.filter(_uuid__in=uuid_list).list(**kwargs)
+        return cls.filter(_uuid__in=uuid_list)
 
     @classmethod
     def map_by_uuids(cls, uuids, **kwargs):
@@ -726,13 +726,13 @@ class DongoCollection(object):
             persons = Person.by_ids(['6725b84b2401323bfda626e7', ...])
 
         :param ids: the ``ObjectId`` or string object id list to check
-        :return: the class instances
+        :return: a QuerySet of the records matching those IDs
         '''
         id_list = [
             ObjectId(x) if isinstance(x, six.string_types) else x
             for x in ids
         ]
-        return cls.filter(_id__in=id_list).list(**kwargs)
+        return cls.filter(_id__in=id_list)
 
     @classmethod
     def map_by_ids(cls, ids, **kwargs):
