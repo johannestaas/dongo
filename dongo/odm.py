@@ -20,6 +20,7 @@ from .exceptions import (
     DongoConnectError,
     DongoResultError,
     DongoCollectionError,
+    DongoDerefError,
 )
 
 __all__ = (
@@ -28,6 +29,9 @@ __all__ = (
     'DongoCollection',
     'QuerySet',
     'to_uuid',
+    'deref',
+    'deref_single',
+    'deref_many',
 )
 
 
@@ -375,26 +379,90 @@ class QuerySet(object):
 
 
 class DongoCollectionMeta(type):
+    COLLECTIONS = {}
 
     def __new__(cls, name, parents, dct):
         coll_name = dct.get('collection')
-        if name != 'DongoCollection':
-            if not coll_name:
-                raise DongoCollectionError(
-                    '{name} requires `collection` class attr'.format(name=name))
-            if dct.get('database'):
-                dct['db'] = CLIENT[dct['database']]
-            elif DATABASE_NAME is None:
-                raise DongoCollectionError(
-                    '{name} requires a database name since default database '
-                    'name was never set with "connect()"'.format(name=name))
-            else:
-                dct['database'] = DATABASE_NAME
-                dct['db'] = CLIENT[DATABASE_NAME]
-            dct['coll'] = dct['db'][coll_name]
-            if 'use_uuid' not in dct:
-                dct['use_uuid'] = False
-        return super(DongoCollectionMeta, cls).__new__(cls, name, parents, dct)
+        if name == 'DongoCollection':
+            return super(DongoCollectionMeta, cls).__new__(
+                cls, name, parents, dct,
+            )
+        if not coll_name:
+            raise DongoCollectionError(
+                '{name} requires `collection` class attr'.format(name=name))
+        if dct.get('database'):
+            dct['db'] = CLIENT[dct['database']]
+        elif DATABASE_NAME is None:
+            raise DongoCollectionError(
+                '{name} requires a database name since default database '
+                'name was never set with "connect()"'.format(name=name))
+        else:
+            dct['database'] = DATABASE_NAME
+            dct['db'] = CLIENT[DATABASE_NAME]
+        dct['coll'] = dct['db'][coll_name]
+        if 'use_uuid' not in dct:
+            dct['use_uuid'] = False
+        new = super(DongoCollectionMeta, cls).__new__(cls, name, parents, dct)
+        DongoCollectionMeta.COLLECTIONS[coll_name] = new
+        return new
+
+
+def deref_single(data):
+    if not data:
+        raise DongoDerefError(
+            'format of data for DongoRef is falsey: {!r}'.format(data)
+        )
+    if '_dref' not in data or '_coll' not in data:
+        raise DongoDerefError(
+            'format bad for DongoRef, needs _dref and _coll and got {!r}'
+            .format(data)
+        )
+    ref_cls = DongoCollectionMeta.COLLECTIONS.get(data['_coll'])
+    if not ref_cls:
+        raise DongoDerefError(
+            'cant find collection {!r} for dref to {!r}'.format(
+                data['_coll'], data['_dref'],
+            )
+        )
+    if isinstance(data['_dref'], UUID):
+        return ref_cls.by_uuid(data['_dref'])
+    else:
+        return ref_cls.by_id(data['_dref'])
+
+
+def deref_many(cls, datas):
+    if not datas:
+        return None
+    ids = [x.get('_dref') for x in datas]
+    if not all(ids):
+        raise DongoDerefError(
+            'one of the ids to deref was falsey or not in the deref data'
+        )
+    colls = {x.get('_coll') for x in datas}
+    if None in colls:
+        raise DongoDerefError('one of the datas to deref had no _coll')
+    if len(colls) > 1:
+        raise DongoDerefError(
+            'in items to deref, multiple collections were found: {!r}'
+            .format(colls)
+        )
+    coll = colls.pop()
+    ref_cls = DongoCollectionMeta.COLLECTIONS.get(coll)
+    if ref_cls is None:
+        raise DongoDerefError('no collection {!r} found'.format(coll))
+    if isinstance(ids[0], UUID):
+        return ref_cls.by_uuids(ids)
+    else:
+        return ref_cls.by_ids(ids)
+
+
+def deref(data):
+    '''
+    Dereferences a dongo reference or collection of dongo references.
+    '''
+    if isinstance(data, dict):
+        return deref_single(data)
+    return deref_many(data)
 
 
 @six.add_metaclass(DongoCollectionMeta)
@@ -836,6 +904,19 @@ class DongoCollection(object):
         if use_uuid is not False:
             self._insert_uuid()
         return self._data['_id']
+
+    def ref(self):
+        '''
+        Return a dongo reference to the record.
+        '''
+        if '_uuid' in self._data:
+            uuid = self['_uuid']
+        else:
+            uuid = self['_id']
+        return {
+            '_dref': uuid,
+            '_coll': self.__class__.collection,
+        }
 
     def json(self, datetime_format=None):
         '''

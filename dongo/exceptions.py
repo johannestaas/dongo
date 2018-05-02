@@ -20,3 +20,7 @@ class DongoResultError(DongoError):
 
 class DongoCollectionError(DongoError):
     pass
+
+
+class DongoDerefError(DongoError):
+    pass
