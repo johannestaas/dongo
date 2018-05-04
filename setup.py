@@ -11,7 +11,7 @@ def read(fname):
 
 setup(
     name="dongo",
-    version="0.2.3",
+    version="0.3.0",
     description="A Django-ORM inspired Mongo ODM.",
     author="Johan Nestaas",
     author_email="johannestaas@gmail.com",
