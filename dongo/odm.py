@@ -430,7 +430,7 @@ def deref_single(data):
         return ref_cls.by_id(data['_dref'])
 
 
-def deref_many(cls, datas):
+def deref_many(datas):
     if not datas:
         return None
     ids = [x.get('_dref') for x in datas]
