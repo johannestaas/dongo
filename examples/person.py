@@ -61,17 +61,17 @@ class Person(DongoCollection):
 
 
 def populate():
-    p1 = Person.new(name='joe', age=20, color='red')
-    Person.new(name='john', age=35, color='green')
-    Person.new(name='jack', age=30, color='blue')
-    Person.new(name='dill', age=25, color='blue')
+    p1 = Person.new(name='joe', age=20, color='red', delete_me=True)
+    Person.new(name='john', age=35, color='green', delete_me=True)
+    Person.new(name='jack', age=30, color='blue', delete_me=True)
+    Person.new(name='dill', age=25, color='blue', delete_me=True)
     print('made persons, first is: {}'.format(p1['name']))
 
 
 def main():
-    if Person.filter().count() < 4:
-        print('populating persons')
-        populate()
+    Person.filter(delete_me=True).delete()
+    print('populating persons')
+    populate()
 
     for p in Person.filter():
         print(p)
@@ -86,6 +86,10 @@ def main():
         print('{} (age {}) likes {}'.format(
             p['name'], p['age'], p['color'],
         ))
+
+    print('{} persons exist... deleting.'.format(Person.filter().count()))
+    Person.filter(delete_me=True).delete()
+    print('{} persons exist!'.format(Person.filter().count()))
 
 
 if __name__ == '__main__':
