@@ -5,6 +5,10 @@ A Django-ORM inspired Mongo ODM.
 
 Python 2.7 and 3.x compatible, and requires the database server running at least MongoDB 2.6, as PyMongo does.
 
+See the latest documentation at:
+
+http://dongo.readthedocs.io/en/latest/
+
 Installation
 ------------
 
