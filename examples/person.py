@@ -21,6 +21,9 @@ class Person(DongoCollection):
         print(self.get('name', 'unknown'))
 
     def serialize(self):
+        '''
+        self.json() essentially does the same thing and recursively.
+        '''
         return {
             'name': self.get('name'),
             'age': self.get('age', 0),
