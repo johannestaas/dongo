@@ -10,3 +10,4 @@ dongo.egg*
 .ropeproject/*
 venv/
 venv2/
+.pytest_cache/
