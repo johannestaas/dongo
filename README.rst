@@ -169,6 +169,8 @@ class definition::
 Release Notes
 -------------
 
+:0.4.0:
+    Added DongoBulk functionality, with lazy and bulk operations.
 :0.3.0:
     Added Dongo references feature, with instance.ref() and deref
 :0.2.3:
