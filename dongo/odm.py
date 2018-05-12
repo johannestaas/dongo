@@ -61,6 +61,13 @@ def to_uuid(val):
                      .format(val))
 
 
+def id_to_uuid(_id):
+    sha = sha256(
+        str(_id).encode('utf8')
+    ).digest()
+    return UUID(bytes=sha[:16])
+
+
 def connect(database, host='localhost', port=27017, uri=None, hosts=None,
             replica_set=None):
     '''
@@ -592,21 +599,12 @@ class DongoCollection(object):
             results[orig_id] = record
         return results
 
-    def _unique_uuid(self):
-        # Use timestamp generated _id from mongodb
-        if self['_id']:
-            return self._uuid_from_id(self['_id'])
-        # very, very, likely unique, but only should use _id if possible
-        return uuid4()
-
-    @classmethod
-    def _uuid_from_id(cls, _id):
-        s = sha256(str(_id).encode('utf8')).digest()
-        return UUID(bytes=s[:16])
-
     def _insert_uuid(self):
         if '_uuid' not in self._data:
-            self['_uuid'] = self._unique_uuid()
+            if self['_id']:
+                self['_uuid'] = id_to_uuid(self['_id'])
+            else:
+                self['_uuid'] = uuid4()
         return self['_uuid']
 
     @classmethod
@@ -640,7 +638,7 @@ class DongoCollection(object):
             _id = inserted_ids[i]
             x._data['_id'] = _id
             if use_uuid is not False:
-                i_uuid = x._uuid_from_id(_id)
+                i_uuid = id_to_uuid(_id)
                 x._data['_uuid'] = i_uuid
                 updates.append(UpdateOne(
                     {'_id': _id}, {'$set': {'_uuid': i_uuid}}
