@@ -229,8 +229,8 @@ class QuerySet(object):
         '''
         Like ``list`` but performs a count.
 
-            >> Person.filter(color='red').count()
-            10
+            Person.filter(color='red').count()
+            # 10
 
         :param limit: whether to limit records to a certain number
         :param **kwargs: other keywords to pass to pymongo
@@ -247,11 +247,11 @@ class QuerySet(object):
         For example, if there are three Person records and favorite color is
         red for two and blue for the last::
 
-            >> Person.filter(age__gt=25).map('color')
-            {
-                'red': [Person(name=Joe, age=26), Person(name=Jack, age=30)],
-                'blue': [Person(name=Schmoe, age=42)],
-            }
+            Person.filter(age__gt=25).map('color')
+            # {
+            #     'red': [Person(name=Joe, age=26), Person(name=Jack, age=30)],
+            #     'blue': [Person(name=Schmoe, age=42)],
+            # }
 
         :param timeout: whether the query should timeout, default ``True``
         :param sort: a field to sort results by initially, either a string or

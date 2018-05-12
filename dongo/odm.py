@@ -362,8 +362,8 @@ class DongoCollection(object):
         Example::
 
             # foo is {"bar": {"baz": true}}
-            >> foo.get('bar.baz')
-            True
+            foo.get('bar.baz')
+            # returns True
 
         :param field: the field to check
         :param default: default to return if it doesn't exist, default None
@@ -684,11 +684,11 @@ class DongoCollection(object):
         '''
         Serialize the object into JSON serializable data::
 
-            >> p = Person.new(name='joe', birthday=datetime(2000, 2, 1))
-            >> print(p.json())
-            {'name': 'joe', 'birthday': '2000-02-01T00:00:00.000000'}
-            >> print(p.json(datetime_format='%d/%m/%Y')
-            {'name': 'joe', 'birthday': '01/02/2000'}
+            p = Person.new(name='joe', birthday=datetime(2000, 2, 1))
+            print(p.json())
+            # {'name': 'joe', 'birthday': '2000-02-01T00:00:00.000000'}
+            print(p.json(datetime_format='%d/%m/%Y')
+            # {'name': 'joe', 'birthday': '01/02/2000'}
 
         :param datetime_format: the strftime datetime format string to use, or
             it just uses ``isoformat()``
@@ -701,12 +701,12 @@ class DongoCollection(object):
         Returns an object that can have its fields be lazily updated through
         indexing, and subsequently saved::
 
-            >> p = Person.new(name='joe')
-            >> lazy = p.lazy()
-            >> lazy['age'] = 100
-            >> lazy['name'] = 'joejoe'
-            >> lazy.set(lastname='jimjim', birthday=datetime(1970, 1, 1))
-            >> lazy.save()
+            p = Person.new(name='joe')
+            lazy = p.lazy()
+            lazy['age'] = 100
+            lazy['name'] = 'joejoe'
+            lazy.set(lastname='jimjim', birthday=datetime(1970, 1, 1))
+            lazy.save()
 
         The attributes in the instance of Person are updated in Python memory,
         however the mongo updates aren't performed until save is called.
@@ -722,11 +722,11 @@ class DongoCollection(object):
         '''
         Delete the instance from the db::
 
-            >> p = Person.filter(name='joe').first()
-            >> p.delete()
-            >> p = Person.filter(name='joe').first()
-            >> print(p)
-            None
+            p = Person.filter(name='joe').first()
+            p.delete()
+            p = Person.filter(name='joe').first()
+            print(p)
+            # None
 
         :return: the pymongo ``delete_one`` result
         '''
